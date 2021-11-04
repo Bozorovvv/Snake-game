@@ -31,18 +31,14 @@ export default function App() {
       checkOutBorder();
       checkCollapsed();
       checkEat();
-      document.onkeydown = onKeyDown;
       const interval = setInterval(moveSnake, speed);
+      document.onkeydown = onKeyDown;
       return () => clearInterval(interval);
     }
-  }, [direction, gameOver, snake, score, highScore]);
-
-  useEffect(() => {}, []);
+  }, [direction, gameOver, snake, score]);
 
   function onKeyDown(e) {
     switch (e.keyCode) {
-      case 17:
-
       case 38:
         if (direction !== "DOWN") {
           setDirection("UP");
