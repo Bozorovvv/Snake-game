@@ -16,9 +16,8 @@ export default function App() {
   );
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
-  const [inte, setInte] = useState(undefined);
   const [direction, setDirection] = useState("RIGHT");
-  const [speed, setSpeed] = useState(200);
+  const [speed, setSpeed] = useState(500);
   const [apple, setApple] = useState(getRandomCoordinates());
   const [snake, setSnake] = useState([
     [0, 0],
@@ -26,25 +25,23 @@ export default function App() {
   ]);
 
   // useEffect(() => {
-  //   /// componentDidMount
-  //   document.onkeydown = onKeyDown;
-  //   setInterval(moveSnake, speed);
-  //   if (!gameOver) {
-  //     checkOutBorder();
-  //     checkCollapsed();
-  //     checkEat();
-  //   }
-  // }, []);
+  //   }, [direction]);
 
   // // componentDidUpdate on snake change
-  // useEffect(() => {
-  //   // console.log(snake);
-  // }, [snake]);
+  useEffect(() => {
+    setInterval(moveSnake, speed);
+    document.onkeydown = onKeyDown;
+    // if (gameOver) {
+    //   checkOutBorder();
+    //   checkCollapsed();
+    //   checkEat();
+    // }
+  }, []);
 
   function onKeyDown(e) {
-    e = e || window.event;
     switch (e.keyCode) {
       case 38:
+        console.log("U");
         setDirection("UP");
         break;
       case 40:
@@ -57,44 +54,39 @@ export default function App() {
         setDirection("RIGHT");
         break;
       case 32:
-        if (gameOver) {
+        if (!gameOver) {
           startGame();
         }
         break;
+      default:
+        break;
     }
+    console.log(direction);
   }
 
   function moveSnake() {
-    console.log(snake);
-    let dots = [...snake];
-    let head = dots[dots.length - 1];
-    switch (direction) {
-      case "RIGHT":
-        head = [head[0] + 2, head[1]];
-        break;
-      case "LEFT":
-        head = [head[0] - 2, head[1]];
-        break;
-      case "DOWN":
-        head = [head[0], head[1] + 2];
-        break;
-      case "UP":
-        head = [head[0], head[1] - 2];
-        break;
-    }
-    dots.push(head);
-    console.log(dots);
-    dots.shift();
-    setSnake(dots);
-  }
+    // console.log(direction);
 
-  function checkCollapsed() {
-    let head = snake[snake.length - 1];
-    snake.pop();
-    snake.forEach((dot) => {
-      if (head[0] == dot[0] && head[1] == dot[1]) {
-        onGameOver();
+    setSnake((prev) => {
+      let dots = [...prev];
+      let head = dots[dots.length - 1];
+      switch (direction) {
+        case "RIGHT":
+          head = [head[0] + 2, head[1]];
+          break;
+        case "LEFT":
+          head = [head[0] - 2, head[1]];
+          break;
+        case "DOWN":
+          head = [head[0], head[1] + 2];
+          break;
+        case "UP":
+          head = [head[0], head[1] - 2];
+          break;
       }
+      dots.push(head);
+      dots.shift();
+      return dots;
     });
   }
 
@@ -105,6 +97,17 @@ export default function App() {
     }
   }
 
+  function checkCollapsed() {
+    let snakeBody = [...snake];
+    let head = snakeBody[snakeBody.length - 1];
+    snakeBody.pop();
+    snakeBody.forEach((dot) => {
+      if (head[0] === dot[0] && head[1] === dot[1]) {
+        onGameOver();
+      }
+    });
+  }
+
   function checkEat() {
     let head = snake[snake.length - 1];
     if (head[0] == apple[0] && head[1] == apple[1]) {
@@ -112,6 +115,8 @@ export default function App() {
       enlargeSnake();
       increaseSpeed();
       changeScores();
+      clearInterval(undefined);
+      setInterval(moveSnake, speed);
     }
   }
 
@@ -123,13 +128,12 @@ export default function App() {
 
   function increaseSpeed() {
     if (speed > 10) {
-      setSpeed((speed -= 10));
+      setSpeed(speed - 10);
     }
   }
 
   function startGame() {
-    setInte(undefined);
-    setDirection("RIGHT");
+    // setDirection("RIGHT");
     setSpeed(200);
     setApple(getRandomCoordinates());
     setSnake([
@@ -143,16 +147,16 @@ export default function App() {
   }
 
   function onGameOver() {
-    clearInterval(inte);
+    clearInterval(undefined);
     setGameOver(true);
-    setInte(undefined);
-    setDirection("RIGHT");
-    setSpeed(200);
-    setApple(getRandomCoordinates());
-    setSnake([
-      [0, 0],
-      [2, 0],
-    ]);
+    // setInte(undefined);
+    // setDirection("RIGHT");
+    // setSpeed(0);
+    // setApple(getRandomCoordinates());
+    // setSnake([
+    //   [0, 0],
+    //   [2, 0],
+    // ]);
   }
 
   function changeScores() {
