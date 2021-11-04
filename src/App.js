@@ -14,10 +14,11 @@ export default function App() {
   const [highScore, setHighScore] = useState(
     localStorage.getItem("highestScore") || 0
   );
+  const [intervalId, setIntervalId] = useState();
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [direction, setDirection] = useState("RIGHT");
-  const [speed, setSpeed] = useState(200);
+  const [speed, setSpeed] = useState(150);
   const [apple, setApple] = useState(getRandomCoordinates());
   const [snake, setSnake] = useState([
     [0, 0],
@@ -30,28 +31,40 @@ export default function App() {
       checkOutBorder();
       checkCollapsed();
       checkEat();
+      document.onkeydown = onKeyDown;
+      const interval = setInterval(moveSnake, speed);
+      return () => clearInterval(interval);
     }
-    document.onkeydown = onKeyDown;
-    const interval = setInterval(moveSnake, speed);
-    return () => clearInterval(interval);
   }, [direction, gameOver, snake, score, highScore]);
+
+  useEffect(() => {}, []);
 
   function onKeyDown(e) {
     switch (e.keyCode) {
+      case 17:
+
       case 38:
-        setDirection("UP");
+        if (direction !== "DOWN") {
+          setDirection("UP");
+        }
         break;
       case 40:
-        setDirection("DOWN");
+        if (direction !== "UP") {
+          setDirection("DOWN");
+        }
         break;
       case 37:
-        setDirection("LEFT");
+        if (direction !== "RIGHT") {
+          setDirection("LEFT");
+        }
         break;
       case 39:
-        setDirection("RIGHT");
+        if (direction !== "LEFT") {
+          setDirection("RIGHT");
+        }
         break;
       case 32:
-        if (gameOver) {
+        if (!gameOver) {
           startGame();
         }
         break;
@@ -106,6 +119,7 @@ export default function App() {
     let head = snake[snake.length - 1];
     if (head[0] == apple[0] && head[1] == apple[1]) {
       setApple(getRandomCoordinates());
+      setSpeed(speed - 5);
       enlargeSnake();
       changeScores();
       // setInterval(moveSnake, speed);
@@ -138,6 +152,7 @@ export default function App() {
       [2, 0],
     ]);
     setGameOver(true);
+    clearInterval(intervalId);
   }
 
   function changeScores() {
