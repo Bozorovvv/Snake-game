@@ -17,31 +17,28 @@ export default function App() {
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [direction, setDirection] = useState("RIGHT");
-  const [speed, setSpeed] = useState(500);
+  const [speed, setSpeed] = useState(200);
   const [apple, setApple] = useState(getRandomCoordinates());
   const [snake, setSnake] = useState([
     [0, 0],
     [2, 0],
   ]);
 
-  // useEffect(() => {
-  //   }, [direction]);
-
   // // componentDidUpdate on snake change
   useEffect(() => {
-    setInterval(moveSnake, speed);
+    if (!gameOver) {
+      checkOutBorder();
+      checkCollapsed();
+      checkEat();
+    }
     document.onkeydown = onKeyDown;
-    // if (gameOver) {
-    //   checkOutBorder();
-    //   checkCollapsed();
-    //   checkEat();
-    // }
-  }, []);
+    const interval = setInterval(moveSnake, speed);
+    return () => clearInterval(interval);
+  }, [direction, gameOver, snake, score, highScore]);
 
   function onKeyDown(e) {
     switch (e.keyCode) {
       case 38:
-        console.log("U");
         setDirection("UP");
         break;
       case 40:
@@ -54,19 +51,16 @@ export default function App() {
         setDirection("RIGHT");
         break;
       case 32:
-        if (!gameOver) {
+        if (gameOver) {
           startGame();
         }
         break;
       default:
         break;
     }
-    console.log(direction);
   }
 
   function moveSnake() {
-    // console.log(direction);
-
     setSnake((prev) => {
       let dots = [...prev];
       let head = dots[dots.length - 1];
@@ -113,10 +107,8 @@ export default function App() {
     if (head[0] == apple[0] && head[1] == apple[1]) {
       setApple(getRandomCoordinates());
       enlargeSnake();
-      increaseSpeed();
       changeScores();
-      clearInterval(undefined);
-      setInterval(moveSnake, speed);
+      // setInterval(moveSnake, speed);
     }
   }
 
@@ -126,15 +118,9 @@ export default function App() {
     setSnake(newSnake);
   }
 
-  function increaseSpeed() {
-    if (speed > 10) {
-      setSpeed(speed - 10);
-    }
-  }
-
   function startGame() {
-    // setDirection("RIGHT");
-    setSpeed(200);
+    setDirection("RIGHT");
+    setSpeed(speed);
     setApple(getRandomCoordinates());
     setSnake([
       [0, 0],
@@ -143,29 +129,19 @@ export default function App() {
     setScore(0);
     setGameOver(false);
     setHighScore(highScore);
-    setInterval(moveSnake, speed);
   }
 
   function onGameOver() {
-    clearInterval(undefined);
+    setDirection("RIGHT");
+    setSnake([
+      [0, 0],
+      [2, 0],
+    ]);
     setGameOver(true);
-    // setInte(undefined);
-    // setDirection("RIGHT");
-    // setSpeed(0);
-    // setApple(getRandomCoordinates());
-    // setSnake([
-    //   [0, 0],
-    //   [2, 0],
-    // ]);
   }
 
   function changeScores() {
-    score += 1;
-    if (score > highScore) {
-      highScore = score;
-    }
-    setHighScore(highScore);
-    setScore(score);
+    setScore(score + 1);
   }
 
   return (
