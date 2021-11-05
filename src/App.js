@@ -35,7 +35,7 @@ export default function App() {
       document.onkeydown = onKeyDown;
       return () => clearInterval(interval);
     }
-  }, [direction, gameOver, snake, score]);
+  }, [direction, gameOver, snake, score, highScore]);
 
   function onKeyDown(e) {
     switch (e.keyCode) {
@@ -127,6 +127,9 @@ export default function App() {
     newSnake.unshift([]);
     setSnake(newSnake);
   }
+  function handleStorage() {
+    localStorage.setItem("highScore", highScore);
+  }
 
   function startGame() {
     setDirection("RIGHT");
@@ -142,6 +145,7 @@ export default function App() {
   }
 
   function onGameOver() {
+    handleStorage();
     setDirection("RIGHT");
     setSnake([
       [0, 0],
@@ -152,7 +156,11 @@ export default function App() {
   }
 
   function changeScores() {
-    setScore(score + 1);
+    let changedScore = score + 1;
+    if (changedScore > highScore) {
+      setHighScore(changedScore);
+    }
+    setScore(changedScore);
   }
 
   return (
