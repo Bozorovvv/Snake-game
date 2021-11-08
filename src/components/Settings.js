@@ -4,14 +4,14 @@ function Settings({
   snakeColor,
   appleColor,
   areaColor,
-  music,
+  playing,
   effects,
   changeGameSpeed,
   changeAreaColor,
   changeSnakeColor,
   changeAppleColor,
   handleEffect,
-  handleMusic,
+  playPause,
 }) {
   return (
     <div>
@@ -38,12 +38,11 @@ function Settings({
       />
 
       <button
-        className={`btn btn-${music ? "primary" : "secondary"} btn-md mt-3`}
-        onClick={() => handleMusic()}
+        className={`btn btn-${playing ? "primary" : "secondary"} btn-md mt-3`}
+        onClick={() => playPause()}
       >
         music
       </button>
-      {/* <input type="range" min="0" max="1" step={0.1} id="vol-control" className={"form-control-range"} onChange={e => changeMusicVolume(e)}/> */}
 
       <button
         className={`btn btn-${effects ? "primary" : "secondary"} btn-md mt-3`}
@@ -51,7 +50,6 @@ function Settings({
       >
         sounds
       </button>
-      {/* <input type="range" min="0" max="1" step={0.1} id="vol-control" className={"form-control-range"} onChange={e => changeEffectsVolume(e)}/> */}
       <div className="input-group mt-3">
         <label className="input-group">Choose your speed:</label>
         <select name="Game speed" onChange={(e) => changeGameSpeed(e)}>

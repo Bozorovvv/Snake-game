@@ -10,17 +10,17 @@ function Game() {
   const [snakeColor, setSnakeColor] = useState("#309bff");
   const [appleColor, setAppleColor] = useState("#ff4830");
   const [areaColor, setAreaColor] = useState("#fff");
-  const [musicIs, setMusicIs] = useState(false);
   const [soundEffects, setSoundEffects] = useState(false);
   const [gameSpeed, setGameSpeed] = useState(200);
   const [gameScore, setGameScore] = useState(false);
-  const gameMusic = new Audio(BackgroundSound);
-  const winnerSound = new Audio(WinnerSound);
-  const gameOverSound = new Audio(GameOverSound);
+  const [playing, setPlaying] = useState(false);
+  const [gameMusic] = useState(new Audio(BackgroundSound));
+  const [winnerSound] = useState(new Audio(WinnerSound));
+  const [gameOverSound] = useState(new Audio(GameOverSound));
 
   useEffect(() => {
-    handlePlayMusic();
-  }, [musicIs]); // eslint-disable-line react-hooks/exhaustive-deps
+    handleMusic();
+  }, [playing]); // eslint-disable-line react-hooks/exhaustive-deps
 
   function changeSnakeColor(e) {
     setSnakeColor(e.target.value);
@@ -32,19 +32,21 @@ function Game() {
     setAreaColor(e.target.value);
   }
 
-  function handleMusic() {
-    setMusicIs(!musicIs);
-    gameMusic.pause();
-  }
-
   function handleEffect() {
     setSoundEffects(!soundEffects);
   }
 
-  function handlePlayMusic() {
-    if (musicIs) {
+  function handleMusic() {
+    if (playing) {
       gameMusic.play();
+    } else {
+      gameMusic.pause();
+      gameMusic.currentTime = 0;
     }
+  }
+
+  function playPause() {
+    setPlaying(!playing);
   }
 
   function foodSound() {
@@ -81,17 +83,17 @@ function Game() {
       <div className="row">
         <div className="col">
           <Settings
-            music={musicIs}
             effects={soundEffects}
             snakeColor={snakeColor}
             appleColor={appleColor}
             areaColor={areaColor}
+            playing={playing}
             handleEffect={handleEffect}
-            handleMusic={handleMusic}
             changeAreaColor={changeAreaColor}
             changeSnakeColor={changeSnakeColor}
             changeAppleColor={changeAppleColor}
             changeGameSpeed={changeGameSpeed}
+            playPause={playPause}
           />
         </div>
         <div className="col-6">
