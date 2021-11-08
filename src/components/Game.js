@@ -94,7 +94,7 @@ function Game() {
             changeGameSpeed={changeGameSpeed}
           />
         </div>
-        <div className="col">
+        <div className="col-6">
           <GameArea
             foodSound={foodSound}
             handleGameScore={handleGameScore}

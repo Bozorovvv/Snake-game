@@ -185,8 +185,11 @@ export default function GameArea({
   }
 
   return (
-    <div className="app-area">
-      <div className="app" style={{ backgroundColor: areaColor }}>
+    <div>
+      <div
+        className="app"
+        style={{ backgroundColor: areaColor, height: "600px", width: "600px" }}
+      >
         <div>
           <Snake snakeLocation={snake} snakeColor={snakeColor} />
           {pause && !gameOverBanner ? <Pause /> : null}
@@ -194,7 +197,7 @@ export default function GameArea({
           <Apple appleLocation={apple} appleColor={appleColor} />
         </div>
       </div>
-      <div className="d-flex justify-content-between align-items-center mt-4">
+      <div className="d-flex justify-content-between mt-2">
         <h4>HighScore:&nbsp;{highScore} </h4>
         <h4>Your score:&nbsp;{score}</h4>
       </div>
