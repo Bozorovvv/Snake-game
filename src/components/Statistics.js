@@ -1,36 +1,29 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from "react";
 
 function Statistics({ gameScore }) {
-  const [data, setData] = useState([])
+  const [data, setData] = useState([]);
 
   function handleResetStats() {
-    localStorage.removeItem('Scores')
-    setData([])
+    localStorage.removeItem("Scores");
+    setData([]);
   }
 
   useEffect(() => {
-    let scores = localStorage.getItem('Scores')
+    let scores = localStorage.getItem("Scores");
     if (scores !== null) {
-      scores = scores.split(',')
-      if (scores.length >= 10) {
-        while (scores.length !== 10) {
-          scores.shift()
+      scores = scores.split(",");
+      if (scores.length > 11) {
+        while (scores.length !== 11) {
+          scores.shift();
         }
       }
-      setData(scores)
-      localStorage.setItem('Scores', scores.toString())
+      setData(scores);
+      localStorage.setItem("Scores", scores.toString());
     }
-  }, [gameScore])
+  }, [gameScore]);
 
   return (
     <>
-      <button
-        style={{ width: '100%' }}
-        className={'btn btn-danger'}
-        onClick={() => handleResetStats()}
-      >
-        Clear Stats
-      </button>
       <table className="table table-bordered">
         <thead>
           <tr>
@@ -40,17 +33,24 @@ function Statistics({ gameScore }) {
         </thead>
         <tbody>
           {data.map((el, index) => {
-            return el !== 'null' ? (
+            return el !== "null" && index !== 0 ? (
               <tr key={index}>
                 <td>{index}</td>
                 <td>{el}</td>
               </tr>
-            ) : null
+            ) : null;
           })}
         </tbody>
       </table>
+      <button
+        style={{ width: "100%" }}
+        className={"btn btn-danger"}
+        onClick={() => handleResetStats()}
+      >
+        Clear Stats
+      </button>
     </>
-  )
+  );
 }
 
-export default Statistics
+export default Statistics;
